@@ -1,0 +1,261 @@
+Assignment 1: IAM User Groups
+Creating User Groups
+Steps:
+
+On the left panel, click User Groups → Create group
+
+Provide group name: DevTeam
+
+Click Create group
+
+Repeat the same steps to create another group named: OpsTeam
+
+Adding Users to Groups
+Add Dev1 and Dev2 to DevTeam:
+Click on DevTeam group name
+
+Click Add users
+
+Select Dev1 and Dev2
+
+Click Add users
+
+Add Dev1, Test1, and Test2 to OpsTeam:
+Click on OpsTeam group name
+
+Click Add users
+
+Select Dev1, Test1, and Test2
+
+Click Add users
+
+Assignment 2: IAM Policies
+Creating Custom Policy 1 (custom-policy-1)
+Steps:
+
+Go to Policies → Create policy
+
+Under Service, select S3
+
+Select All S3 actions and All resources
+
+Full access to S3 service and its resources
+
+Click Add more permissions → Select RDS
+
+Select All RDS actions and All resources
+
+Full access to RDS service and its resources
+
+Click Add more permissions → Select EC2
+
+Select All EC2 actions
+
+Initially allows full EC2 access
+
+Click Add more permissions → Select EC2 again
+
+Under Actions, choose:
+
+StartInstances, StopInstances, TerminateInstances, DescribeVerifiedAccessInstances
+
+Set Effect to Deny
+
+User will be denied ability to start/stop/terminate/access instances
+
+Can only launch instances
+
+Provide policy name: custom-policy-1
+
+Click Create policy
+
+Creating Custom Policy 2 (custom-policy-2)
+Steps:
+
+Go to Policies → Create policy
+
+Select CloudWatch → All actions, All resources
+
+Add more permissions → Select Billing → All actions, All resources
+
+Add more permissions → Select S3 → All List actions, All resources
+
+Add more permissions → Select EC2 → All List actions, All resources
+
+Provide policy name: custom-policy-2
+
+Click Create policy
+
+Attaching Policies to Groups
+Attach custom-policy-1 to DevTeam:
+Click on DevTeam
+
+Go to Permissions tab → Add permissions
+
+Choose Attach policies
+
+Set filter: Customer managed
+
+Select custom-policy-1
+
+Click Attach policies
+
+Attach custom-policy-2 to OpsTeam:
+Repeat the same above steps and select custom-policy-2
+
+Assignment 3: IAM Roles
+Assigning Permissions to Users
+For Dev1:
+Go to Users → Click on Dev1
+
+Click Add permissions → Attach policies directly
+
+Attach:
+
+AmazonVPCFullAccess
+
+AmazonDynamoDBFullAccess
+
+Click Next → Add permissions
+
+Repeat same steps for Dev2
+Login as IAM User (Dev1)
+Steps:
+
+Open Incognito Chrome Tab
+
+Go to AWS Sign-in page → Choose IAM user sign-in
+
+Provide:
+
+Account ID
+
+Username: Dev1
+
+Password: 2v9CxS2#
+
+New password: Daniyal@-2000
+
+Launch EC2 Instance as IAM User
+Go to EC2 → Click Launch instance
+
+Instance name: server
+
+Choose default VPC and security group
+
+Create a key pair (e.g., ec2-kp-22dec.pem)
+
+Create Security Group
+Go to Security Groups → Create Security Group
+
+Name: EC2-sg
+
+VPC: Default
+
+Add Inbound Rule:
+
+Type: SSH
+
+Source: My IP
+
+Description: Allows SSH from my IP
+
+Click Create Security Group
+
+Go to Instances → Select your instance
+
+Actions → Security → Change Security Groups
+
+Select EC2-sg and default group → Save
+
+Access EC2 Instance via Terminal
+Open terminal
+
+Run:
+
+bash
+Copy
+Edit
+ssh -i ec2-kp-22dec.pem ec2-user@18.206.185.68
+Generate access keys:
+
+Go to User Dev1 → Security credentials
+
+Click Create access key
+
+Choose CLI option
+
+Download .csv file
+
+Enter access key and secret key when prompted
+
+Connecting VPC to DynamoDB
+bash
+Copy
+Edit
+aws dynamodb list-tables
+aws ec2 describe-vpc-endpoint-services
+aws ec2 describe-vpcs
+aws ec2 create-vpc-endpoint
+aws dynamodb list-tables
+DynamoDB access through VPC endpoint successful
+
+Assignment 4: CloudWatch Dashboard
+Create Dashboard
+Go to CloudWatch
+
+On left panel → Dashboards → Create Dashboard
+
+Name: demo-cw-dashboard → Click Create
+
+Click on dashboard name → Click + symbol
+
+Select Metrics → Choose EC2 service
+
+Select Per-instance metrics → Enter instance ID
+
+Choose CPU Utilization and networking metrics
+
+Click Create widget
+
+Assignment 5: CloudWatch Alarms
+Billing Alarm
+Go to CloudWatch → Alarms → Create Alarm
+
+Search Billing Service → Enable billing alerts
+
+Under Metrics, search cost
+
+Select GetCostForecast metric
+
+Condition: Greater than (>) 500
+
+Notification:
+
+Provide email
+
+Create new SNS topic: demo-alarm-cw
+
+Click Create Alarm
+
+EC2 CPU Utilization Alarm
+Go to CloudWatch → Alarms → Create Alarm
+
+Under Metrics, select EC2
+
+Enter instance ID → Select CPU Utilization
+
+Condition: Greater than (>) 65
+
+Notification:
+
+Enter email
+
+Create SNS topic: demo-alarm-cw-1
+
+Click Create Alarm
+
+Alarm Functionality
+Billing Alarm: Notifies via email when AWS bill exceeds $500
+
+EC2 Alarm: Notifies via email when CPU Utilization > 65%
